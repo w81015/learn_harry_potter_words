@@ -1,3 +1,4 @@
+[中文版 Chinese version](README_zh.md)
 # Harry Potter English Learning Tool
 
 This program provides an interactive learning platform that helps users improve their English vocabulary and reading skills using excerpts from the original *Harry Potter* books. The application is hosted on [Streamlit Cloud](https://learn-harry-potter-words.streamlit.app/), allowing users to access it directly without installation.

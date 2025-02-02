@@ -1,3 +1,4 @@
+[English version 英文版](README.md)
 # 哈利波特英文學習工具
 
 本程式提供了一個互動式學習平台，透過《哈利波特》原文內容，幫助使用者提升英文詞彙與閱讀能力。本應用程式運行於 [Streamlit Cloud](https://learn-harry-potter-words.streamlit.app/)，無需安裝，即可直接使用。
