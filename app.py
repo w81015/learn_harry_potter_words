@@ -2,13 +2,37 @@ import streamlit as st
 import home, random_sentence, quiz
 from read_csv import load_data
 
+# 1. 在這裡加入 Google Analytics 追蹤碼
+GA_ID = "G-02NL6W1HZJ"
+
+# 2. 插入 GA 追蹤碼到 Streamlit
+GA_SCRIPT = f"""
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id={GA_ID}"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){{dataLayer.push(arguments);}}
+  gtag('js', new Date());
+
+  gtag('config', '{GA_ID}', {{ 'send_page_view': false }});
+
+  function trackPage(page_name) {{
+      gtag('event', 'page_view', {{
+          'page_path': page_name
+      }});
+  }}
+</script>
+"""
+
+st.markdown(GA_SCRIPT, unsafe_allow_html=True)
+
 # 使用裝飾器來快取資料
 @st.cache_data
 def load_and_cache_data(filepath):
     return load_data(filepath)
 
 # 讀取 CSV 資料，並使用快取
-df = load_and_cache_data('result.csv')  # 請使用你自己的資料路徑
+df = load_and_cache_data('result.csv')
 
 # 檢查資料是否成功讀取
 if df is None:
@@ -23,12 +47,16 @@ else:
     def switch_page(page_name):
         st.session_state.page = page_name
 
+        # 3. 每次切換頁面時，發送 `page_view` 事件
+        st.markdown(f'<script>trackPage("/{page_name}")</script>', unsafe_allow_html=True)
+
+
     # 直接顯示可點選的按鈕
     if st.sidebar.button("功能介紹", use_container_width=True):
         switch_page("功能介紹")
 
-    if st.sidebar.button("隨機學習單字和句子", use_container_width=True):
-        switch_page("隨機學習單字和句子")
+    if st.sidebar.button("學習單字和句子", use_container_width=True):
+        switch_page("學習單字和句子")
 
     if st.sidebar.button("句子填空測驗", use_container_width=True):
         switch_page("句子填空測驗")
@@ -36,27 +64,8 @@ else:
     # 根據選擇顯示對應的頁面內容
     if st.session_state.page == "功能介紹":
         home.home_page()
-    elif st.session_state.page == "隨機學習單字和句子":
+    elif st.session_state.page == "學習單字和句子":
         random_sentence.random_sentence(df)
     elif st.session_state.page == "句子填空測驗":
         quiz.quiz_page(df)
     
-    # # 在側邊欄中創建按鈕來選擇頁面
-    # st.sidebar.title("目錄")
-    # # 使用 Session State 保留頁面選擇狀態
-    # if 'page' not in st.session_state:
-    #     st.session_state.page = "功能介紹"  # 預設為首頁
-    
-    # # 這裡不需要用 button，因為這樣會觸發頁面重新加載，應該用選擇框選擇頁面
-    # page = st.sidebar.radio("", ["功能介紹", "隨機學習單字和句子"], index=["功能介紹", "隨機學習單字和句子"].index(st.session_state.page))
-
-    # # 將選擇的頁面存入 session_state
-    # st.session_state.page = page
-
-    # # 根據選擇顯示對應的頁面內容
-    # if st.session_state.page == "功能介紹":
-    #     home.home_page()  # 傳遞資料
-    # elif st.session_state.page == "隨機學習單字和句子":
-    #     random_sentence.random_sentence(df)  # 傳遞資料
-    # else:
-    #     st.write("請選擇一個頁面")
