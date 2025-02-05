@@ -5,9 +5,9 @@ import os
 import dotenv
 
 # 1. 在這裡加入 Google Analytics 追蹤碼
-dotenv.load_dotenv()  # 載入 .env 檔案
-GA_ID = os.getenv("GA_ID")  # 讀取 GA4 ID
-
+GA_ID = st.secrets["general"]["GA_ID"]  #使用streamlit cloud 的secrets載入
+# dotenv.load_dotenv()  # 載入 .env 檔案
+# GA_ID = os.getenv("GA_ID")  # 讀取 GA4 ID
 
 # 2. 插入 GA 追蹤碼到 Streamlit
 GA_SCRIPT = f"""
