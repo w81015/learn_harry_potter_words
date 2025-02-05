@@ -1,0 +1,20 @@
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id={{GA_ID}}"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  // 啟用 GA4 追蹤
+  gtag('config', '{{GA_ID}}');
+
+  // 手動觸發頁面瀏覽追蹤
+  function trackPage(page_name) {
+      gtag('event', 'page_view', {
+          'page_path': page_name
+      });
+  }
+
+  // 自動追蹤首頁
+  setTimeout(() => trackPage(window.location.pathname), 1000);
+</script>
