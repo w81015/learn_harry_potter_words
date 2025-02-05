@@ -39,10 +39,11 @@ def random_sentence(df):
     select_all = st.checkbox("全選", value=False)
 
     books_selected = []
-    grid = st.grid(3)  # 3 欄的 Grid
+    container = st.container()  # 確保順序
+    cols = container.columns(3)  # 讓選項分成三欄
 
-    for book_num, book_name in books_available.items():
-        with grid.cell():
+    for i, (book_num, book_name) in enumerate(books_available.items()):
+        with cols[i % 3]:  # 按順序分配到 3 欄
             if st.checkbox(book_name, value=select_all, key=f"book_{book_num}"):
                 books_selected.append(book_num)
 
