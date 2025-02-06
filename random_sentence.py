@@ -70,11 +70,12 @@ def random_sentence(df):
              "- 隨機學到 5 個單字及其對應句子，幫助你熟悉原文語境。\n")
 
     books_selected, show_chinese = book_and_translation_selection()
-    if not books_selected:
-        return
 
     # 開始按鈕
-    if st.button("⏳ 開始"):
+    start_disabled = not bool(books_selected)
+    start_button = st.button("⏳ 開始", disabled=start_disabled)
+
+    if start_button:
         with st.spinner("查詢中..."):
             time.sleep(0.5)
         st.success("✅ 完成（請點開單字看例句）：")
