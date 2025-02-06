@@ -2,43 +2,20 @@ import streamlit as st
 import home, random_sentence, quiz
 from read_csv import load_data
 
-from bs4 import BeautifulSoup
-import shutil
-import pathlib
-import logging
 
-def add_analytics_tag():
-    # replace G-XXXXXXXXXX to your web app's ID
-    
-    analytics_js = """
-    <!-- Global site tag (gtag.js) - Google Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-02NL6W1HZJ"></script>
-    <script>
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
-        gtag('config', 'G-02NL6W1HZJ');
-    </script>
-    <div id="G-02NL6W1HZJ"></div>
-    """
-    analytics_id = "G-02NL6W1HZJ"
+# 1️⃣ 嘗試載入 GA_ID，避免 KeyError
+GA_ID = st.secrets["general"].get("GA_ID", None)
 
-    
-    # Identify html path of streamlit
-    index_path = pathlib.Path(st.__file__).parent / "static" / "index.html"
-    logging.info(f'editing {index_path}')
-    soup = BeautifulSoup(index_path.read_text(), features="html.parser")
-    if not soup.find(id=analytics_id): # if id not found within html file
-        bck_index = index_path.with_suffix('.bck')
-        if bck_index.exists():
-            shutil.copy(bck_index, index_path)  # backup recovery
-        else:
-            shutil.copy(index_path, bck_index)  # save backup
-        html = str(soup)
-        new_html = html.replace('<head>', '<head>\n' + analytics_js) 
-        index_path.write_text(new_html) # insert analytics tag at top of head
+# 確保 GA_ID 存在
+# 讀取 HTML 檔案
+with open('ga_script.html', 'r') as file:
+    GA_SCRIPT = file.read()
+        
+# 替換 GA_ID 位置
+GA_SCRIPT = GA_SCRIPT.replace("{{GA_ID}}", GA_ID)
 
-add_analytics_tag()
+# 使用 st.components.v1.html 來確保 JavaScript 正確載入
+st.components.v1.html(GA_SCRIPT, height=0)
 
 # 2️⃣ 快取 CSV 資料
 @st.cache_data
