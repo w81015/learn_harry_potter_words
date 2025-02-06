@@ -48,10 +48,16 @@ def book_and_translation_selection():
         7: "第7集：死神的聖物  Deathly Hallows"
     }
 
+    # "全選" 功能
     select_all = st.checkbox("全選", value=False)
-    books_selected = [
-        num for num, name in books_available.items() if st.checkbox(name, value=select_all, key=f"book_{num}")
-    ]
+
+    # 書籍選擇 (三欄顯示)
+    books_selected = []
+    cols = st.columns(3)
+    for i, (book_num, book_name) in enumerate(books_available.items()):
+        with cols[i % 3]:
+            if st.checkbox(book_name, value=select_all, key=f"book_{book_num}"):
+                books_selected.append(book_num)
 
     if not books_selected:
         st.warning("請選擇至少一本書籍才能開始練習！")
@@ -163,4 +169,3 @@ def quiz_page(df):
             st.session_state.start_button_clicked = False
             st.session_state.reset_questions = True
             st.rerun()
-
