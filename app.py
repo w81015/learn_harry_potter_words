@@ -7,36 +7,38 @@ import shutil
 import pathlib
 import logging
 
-def inject_ga():
+def add_analytics_tag():
+    # replace G-XXXXXXXXXX to your web app's ID
+    
+    analytics_js = """
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-02NL6W1HZJ"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-02NL6W1HZJ');
+    </script>
+    <div id="G-02NL6W1HZJ"></div>
+    """
+    analytics_id = "G-02NL6W1HZJ"
 
-    # new tag method
-    GA_ID = "G-02NL6W1HZJ"
-    GA_JS = """
-<!-- Global site tag (gtag.js) - Google Analytics -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-02NL6W1HZJ"> id="google_analytics" </script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-02NL6W1HZJ');
-</script>
-"""
-    # Insert the script in the head tag of the static template inside your virtual
+    
+    # Identify html path of streamlit
     index_path = pathlib.Path(st.__file__).parent / "static" / "index.html"
     logging.info(f'editing {index_path}')
-    soup = BeautifulSoup(index_path.read_text(), features="lxml")
-    if not soup.find(id=GA_ID):  # if cannot find tag
+    soup = BeautifulSoup(index_path.read_text(), features="html.parser")
+    if not soup.find(id=analytics_id): # if id not found within html file
         bck_index = index_path.with_suffix('.bck')
         if bck_index.exists():
-            shutil.copy(bck_index, index_path)  # recover from backup
+            shutil.copy(bck_index, index_path)  # backup recovery
         else:
-            shutil.copy(index_path, bck_index)  # keep a backup
+            shutil.copy(index_path, bck_index)  # save backup
         html = str(soup)
-        new_html = html.replace('<head>', '<head>\n' + GA_JS)
-        index_path.write_text(new_html)
+        new_html = html.replace('<head>', '<head>\n' + analytics_js) 
+        index_path.write_text(new_html) # insert analytics tag at top of head
 
-inject_ga()
+add_analytics_tag()
 
 # 2️⃣ 快取 CSV 資料
 @st.cache_data
