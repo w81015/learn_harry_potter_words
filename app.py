@@ -2,19 +2,41 @@ import streamlit as st
 import home, random_sentence, quiz
 from read_csv import load_data
 
-# 1️⃣ 嘗試載入 GA_ID，避免 KeyError
-GA_ID = st.secrets["general"].get("GA_ID", None)
+from bs4 import BeautifulSoup
+import shutil
+import pathlib
+import logging
 
-# 確保 GA_ID 存在
-# 讀取 HTML 檔案
-with open('ga_script.html', 'r') as file:
-    GA_SCRIPT = file.read()
-        
-# 替換 GA_ID 位置
-GA_SCRIPT = GA_SCRIPT.replace("{{GA_ID}}", GA_ID)
+def inject_ga():
 
-# 使用 st.components.v1.html 來確保 JavaScript 正確載入
-st.components.v1.html(GA_SCRIPT, height=0)
+    # new tag method
+    GA_ID = "G-02NL6W1HZJ"
+    GA_JS = """
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-XXXXXXXXX"> id="google_analytics" </script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-XXXXXXXXX');
+</script>
+"""
+    # Insert the script in the head tag of the static template inside your virtual
+    index_path = pathlib.Path(st.__file__).parent / "static" / "index.html"
+    logging.info(f'editing {index_path}')
+    soup = BeautifulSoup(index_path.read_text(), features="lxml")
+    if not soup.find(id=GA_ID):  # if cannot find tag
+        bck_index = index_path.with_suffix('.bck')
+        if bck_index.exists():
+            shutil.copy(bck_index, index_path)  # recover from backup
+        else:
+            shutil.copy(index_path, bck_index)  # keep a backup
+        html = str(soup)
+        new_html = html.replace('<head>', '<head>\n' + GA_JS)
+        index_path.write_text(new_html)
+
+inject_ga()
 
 # 2️⃣ 快取 CSV 資料
 @st.cache_data
