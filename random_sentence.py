@@ -56,9 +56,6 @@ def book_and_translation_selection():
             if st.checkbox(book_name, value=select_all, key=f"book_{book_num}"):
                 books_selected.append(book_num)
 
-    if not books_selected:
-        st.warning("請選擇至少一本書籍才能開始練習！")
-
     show_chinese = st.checkbox("🔍 顯示句子的中文翻譯", value=False)
 
     return books_selected, show_chinese
@@ -72,6 +69,8 @@ def random_sentence(df):
     books_selected, show_chinese = book_and_translation_selection()
 
     # 開始按鈕
+    if not books_selected:
+        st.warning("請選擇至少一本書籍才能開始練習！")
     start_disabled = not bool(books_selected)
     start_button = st.button("⏳ 開始", disabled=start_disabled)
 

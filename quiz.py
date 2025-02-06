@@ -1,4 +1,5 @@
 import streamlit as st
+import time
 import random
 
 # 取得書籍名稱
@@ -58,9 +59,6 @@ def book_and_translation_selection():
         with cols[i % 3]:
             if st.checkbox(book_name, value=select_all, key=f"book_{book_num}"):
                 books_selected.append(book_num)
-
-    if not books_selected:
-        st.warning("請選擇至少一本書籍才能開始練習！")
 
     show_chinese = st.checkbox("🔍 顯示句子的中文翻譯", value=False)
 
@@ -141,12 +139,20 @@ def quiz_page(df):
     )
 
     books_selected, show_chinese = book_and_translation_selection()
-    if not books_selected:
-        return
 
     initialize_session_state()
 
-    if st.button("開始練習"):
+    # 開始按鈕
+    if not books_selected:
+        st.warning("請選擇至少一本書籍才能開始練習！")
+    start_disabled = not bool(books_selected)
+    start_button = st.button("⏳ 開始測驗", disabled=start_disabled)
+
+    if start_button:
+        with st.spinner("查詢中..."):
+            time.sleep(0.5)
+        st.success("✅ 完成（請開始作答）：")
+    
         st.session_state.books_selected = books_selected
         st.session_state.show_chinese = show_chinese
         st.session_state.start_button_clicked = True
