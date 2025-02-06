@@ -13,13 +13,13 @@ def inject_ga():
     GA_ID = "G-02NL6W1HZJ"
     GA_JS = """
 <!-- Global site tag (gtag.js) - Google Analytics -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=UA-XXXXXXXXX"> id="google_analytics" </script>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-02NL6W1HZJ"> id="google_analytics" </script>
 <script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
 
-  gtag('config', 'UA-XXXXXXXXX');
+  gtag('config', 'G-02NL6W1HZJ');
 </script>
 """
     # Insert the script in the head tag of the static template inside your virtual
