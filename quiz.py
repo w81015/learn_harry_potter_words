@@ -93,7 +93,7 @@ def initialize_session_state():
 def display_questions():
     for i, q in enumerate(st.session_state.questions):
         with st.expander(f"#### 問題 {i + 1}", expanded=True):
-            st.write(q["sentence"])
+            st.markdown(q["sentence"].replace("\n", "<br>"), unsafe_allow_html=True)
             st.session_state.answers[i] = st.radio(
                 "選項：", q["options"], key=f"q{i}_v2", index=None
             )
