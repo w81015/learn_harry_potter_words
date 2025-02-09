@@ -52,13 +52,23 @@ def book_and_translation_selection():
     # "全選" 功能
     select_all = st.checkbox("全選", value=False)
 
-    # 書籍選擇 (三欄顯示)
+    # 書籍選擇 (兩欄顯示，分為1-4集與5-7集)
     books_selected = []
-    cols = st.columns(3)
-    for i, (book_num, book_name) in enumerate(books_available.items()):
-        with cols[i % 3]:
-            if st.checkbox(book_name, value=select_all, key=f"book_{book_num}"):
-                books_selected.append(book_num)
+    cols = st.columns(2)
+
+    # 第一欄 (顯示1-4集)
+    with cols[0]:
+        for i, (book_num, book_name) in enumerate(books_available.items()):
+            if book_num <= 4:
+                if st.checkbox(book_name, value=select_all, key=f"book_{book_num}"):
+                    books_selected.append(book_num)
+
+    # 第二欄 (顯示5-7集)
+    with cols[1]:
+        for i, (book_num, book_name) in enumerate(books_available.items()):
+            if book_num >= 5:
+                if st.checkbox(book_name, value=select_all, key=f"book_{book_num}"):
+                    books_selected.append(book_num)
 
     show_chinese = st.checkbox("🔍 顯示句子的中文翻譯", value=False)
 
