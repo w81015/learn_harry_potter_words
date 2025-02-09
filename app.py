@@ -3,19 +3,19 @@ import home, random_sentence, quiz, listening
 from read_csv import load_data
 
 
-# 1️⃣ 嘗試載入 GA_ID，避免 KeyError
-GA_ID = st.secrets["general"].get("GA_ID", None)
+# # 1️⃣ 嘗試載入 GA_ID，避免 KeyError
+# GA_ID = st.secrets["general"].get("GA_ID", None)
 
-# 確保 GA_ID 存在
-# 讀取 HTML 檔案
-with open('ga_script.html', 'r') as file:
-    GA_SCRIPT = file.read()
+# # 確保 GA_ID 存在
+# # 讀取 HTML 檔案
+# with open('ga_script.html', 'r') as file:
+#     GA_SCRIPT = file.read()
         
-# 替換 GA_ID 位置
-GA_SCRIPT = GA_SCRIPT.replace("{{GA_ID}}", GA_ID)
+# # 替換 GA_ID 位置
+# GA_SCRIPT = GA_SCRIPT.replace("{{GA_ID}}", GA_ID)
 
-# 使用 st.components.v1.html 來確保 JavaScript 正確載入
-st.components.v1.html(GA_SCRIPT, height=0)
+# # 使用 st.components.v1.html 來確保 JavaScript 正確載入
+# st.components.v1.html(GA_SCRIPT, height=0)
 
 # 2️⃣ 快取 CSV 資料
 @st.cache_data

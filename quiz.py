@@ -1,6 +1,7 @@
 import streamlit as st
 import time
 import random
+import re
 
 # 取得書籍名稱
 def get_book_title(book_num):
@@ -19,7 +20,14 @@ def get_book_title(book_num):
 def generate_question(df):
     row = df.sample(1).iloc[0]
     target_word = row["words"]
-    sentence = row["sentence"].replace(target_word, "___")
+    sentence = row["sentence"]
+
+    # 正則表達式匹配 target_word，忽略大小寫
+    pattern = fr"\b{re.escape(target_word)}\b"
+    def replace_with_placeholder(match):
+        word = match.group(0)  # 匹配到的單詞
+        return "___" if word.islower() else "___".capitalize()
+    sentence = re.sub(pattern, replace_with_placeholder, sentence, flags=re.IGNORECASE)
     
     options = df[df["words"] != target_word].sample(3)["words"].tolist() + [target_word]
     random.shuffle(options)
@@ -83,7 +91,8 @@ def initialize_session_state():
         "reset_questions": False,
         "start_button_clicked": False,
         "books_selected": [],
-        "show_chinese": False
+        "show_chinese": False,
+        "info_message": False
     }
     for key, value in default_values.items():
         if key not in st.session_state:
@@ -93,7 +102,7 @@ def initialize_session_state():
 def display_questions():
     for i, q in enumerate(st.session_state.questions):
         with st.expander(f"#### 問題 {i + 1}", expanded=True):
-            st.markdown(q["sentence"].replace("\n", "<br>"), unsafe_allow_html=True)
+            st.markdown(q["sentence"].replace("\n", "<br>"), unsafe_allow_html=True)  # 用 st.write 會將換行符號取代成空格
             st.session_state.answers[i] = st.radio(
                 "選項：", q["options"], key=f"q{i}_v2", index=None
             )
@@ -169,11 +178,15 @@ def quiz_page(df):
     if start_button:
         with st.spinner("查詢中..."):
             time.sleep(0.5)
-        st.info("✅ 完成（請開始作答）：")   
+        st.session_state.info_message = "✅ 完成（請開始作答）："  # 顯示訊息
         st.session_state.books_selected = books_selected
         st.session_state.show_chinese = show_chinese
         st.session_state.start_button_clicked = True
         st.session_state.reset_questions = True  
+
+    # 只有當 `info_message` 不為 None 時才顯示
+    if st.session_state.info_message:
+        st.info(st.session_state.info_message)
 
     if st.session_state.start_button_clicked:
         if st.session_state.reset_questions:
@@ -189,6 +202,7 @@ def quiz_page(df):
             evaluate_answers(df)
 
         if st.button("🔄 再測一次"):
+            st.session_state.info_message = None   # 取消訊息 
             st.session_state.start_button_clicked = False
             st.session_state.reset_questions = True
             st.rerun()
