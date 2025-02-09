@@ -113,11 +113,19 @@ def evaluate_answers(df):
             color = "green" if correct else "red"
 
             st.write(f"### 第 {i+1} 題 {status}")
-            st.markdown(f"**題目**： {q['sentence'].replace('___', f'**`{q['answer']}`**')}")
-            st.write(f"**翻譯**： {q['sentence_ch'].replace(q['words_ch'], f'`{q['words_ch']}`')}")
+
             st.write(f"**您的回答**：", f'<span style="color:{color}; font-weight:bold">{user_ans}</span>', unsafe_allow_html=True)
-            st.write(f"**正確答案**： {q['answer']}")
-            st.write(f"**單字解釋**： {q['words_ch']}")
+            st.write(f"**正確答案**： {q['answer']} ({q['words_ch']})")
+
+            # st.markdown(f"**題目**： {q['sentence'].replace('___', f'**`{q['answer']}`**')}")
+            answer_formatted = f"**`{q['answer']}`**"
+            sentence_display = q['sentence'].replace('___', answer_formatted)
+            st.markdown(f"**題目**： {sentence_display}")
+
+            # st.write(f"**翻譯**： {q['sentence_ch'].replace(q['words_ch'], f'`{q['words_ch']}`')}")
+            words_ch_formatted = f"`{q['words_ch']}`"
+            sentence_ch_display = q['sentence_ch'].replace(q['words_ch'], words_ch_formatted)
+            st.write(f"**翻譯**： {sentence_ch_display}")
 
             # 其他選項
             st.markdown("**其他選項：**", unsafe_allow_html=True)
@@ -151,8 +159,7 @@ def quiz_page(df):
     if start_button:
         with st.spinner("查詢中..."):
             time.sleep(0.5)
-        st.success("✅ 完成（請開始作答）：")
-    
+        st.info("✅ 完成（請開始作答）：")   
         st.session_state.books_selected = books_selected
         st.session_state.show_chinese = show_chinese
         st.session_state.start_button_clicked = True

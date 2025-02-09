@@ -77,7 +77,11 @@ def random_sentence(df):
     if start_button:
         with st.spinner("查詢中..."):
             time.sleep(0.5)
-        st.success("✅ 完成（請點開單字看例句）：")
+        st.markdown(
+            "<div style='background-color:#d4edda; color:#155724; padding:10px; border-radius:5px;'>"
+            "✅ <b>完成（請點開單字看例句）：</b></div>",
+            unsafe_allow_html=True
+        )
 
         # **篩選數據**
         filtered_df = df[df["book"].isin(books_selected)].sample(n=10, replace=True)

@@ -18,7 +18,7 @@ def home_page():
     "點選下方（或側邊欄）的頁面到各個功能！"
     )
 
-    col1, col2= st.columns(2)
+    col1, col2, col3 = st.columns(3)
     with col1:
         # 連結到 "學習單字和句子" 頁面
         if st.button("前往學習單字和句子", key="to_random_sentence", use_container_width=True):
@@ -29,6 +29,12 @@ def home_page():
         # 連結到 "句子填空測驗" 頁面
         if st.button("前往句子填空測驗", key="to_quiz", use_container_width=True):
             st.session_state.page = "句子填空測驗"
+            st.rerun()
+    
+    with col3:
+        # 連結到 "聽力填空測驗" 頁面
+        if st.button("前往聽力填空測驗", key="to_listening", use_container_width=True):
+            st.session_state.page = "聽力填空測驗"
             st.rerun()
 
     st.markdown("---")
