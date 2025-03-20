@@ -101,7 +101,8 @@ def display_questions():
         tts.write_to_fp(audio_bytes)
         audio_bytes.seek(0)  # 重置指標以便播放
         # 顯示音訊播放器
-        st.audio(audio_bytes, format="audio/mp3")
+        if st.button("播放音檔"):
+            st.audio(audio_bytes, format="audio/mp3")
 
         # 顯示輸入框讓使用者回答
         st.write(f"#### 作答區")
